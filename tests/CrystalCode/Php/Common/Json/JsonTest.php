@@ -95,4 +95,19 @@ class JsonTest extends TestCase
         $this->assertEquals('["a","b","c"]', $encoded);
     }
 
+    public function test6(): void
+    {
+        $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
+              $nameMapperBuilder->withExternalNames([
+                  Foo::class => 'foo',
+                  Bar::class => 'bar',
+                  Qux::class => 'qux',
+              ]);
+          });
+
+        $json = new Json($nameMapper, 0);
+        $decoded = $json->decode('{"a":42,"b":"Hello world!","$id":"qux"}');
+        $this->assertEquals(new Qux(), $decoded);
+    }
+
 }

@@ -13,7 +13,7 @@ final class Json
      * @var NameMapperInterface
      */
     private $nameMapper;
-    
+
     /**
      *
      * @var int
@@ -37,7 +37,7 @@ final class Json
      */
     public function encode($value): string
     {
-        $jsonValues = $this->getJsonValues($value);
+        $jsonValues = $this->processGetJsonValues($value);
         return json_encode($jsonValues, $this->options);
     }
 
@@ -49,7 +49,7 @@ final class Json
     public function decode(string $input)
     {
         $jsonValues = json_decode($input);
-        return $this->setJsonValues($jsonValues);
+        return $this->processSetJsonValues($jsonValues);
     }
 
     /**
@@ -57,7 +57,7 @@ final class Json
      * @param mixed $source
      * @return mixed
      */
-    private function getJsonValues($source)
+    private function processGetJsonValues($source)
     {
         if (is_object($source)) {
             if ($source instanceof stdClass) {
@@ -71,7 +71,7 @@ final class Json
                 $jsonValues = $source->getJsonValues();
 
                 foreach (get_object_vars($jsonValues) as $key => $value) {
-                    $result[$key] = $this->getJsonValues($value);
+                    $result[$key] = $this->processGetJsonValues($value);
                 }
 
                 return (object) ($result + [
@@ -86,7 +86,7 @@ final class Json
                 $propertyReflection->setAccessible(true);
                 $key = $propertyReflection->getName();
                 $value = $propertyReflection->getValue($source);
-                $result[$key] = $this->getJsonValues($value);
+                $result[$key] = $this->processGetJsonValues($value);
             }
 
             return (object) ($result + [
@@ -98,7 +98,7 @@ final class Json
             $result = [];
 
             foreach ($source as $key => $value) {
-                $result[$key] = $this->getJsonValues($value);
+                $result[$key] = $this->processGetJsonValues($value);
             }
 
             return $result;
@@ -112,7 +112,7 @@ final class Json
      * @param mixed $source
      * @return mixed
      */
-    private function setJsonValues($source)
+    private function processSetJsonValues($source)
     {
         if (is_object($source)) {
             if (isset($source->{'$id'})) {
@@ -122,11 +122,44 @@ final class Json
                 $jsonValues = [];
 
                 foreach (get_object_vars($source) as $key => $value) {
-                    $jsonValues[$key] = $this->setJsonValues($value);
+                    $jsonValues[$key] = $this->processSetJsonValues($value);
                 }
 
                 if ($result instanceof JsonValuesSetterInterface) {
-                    $result->setJsonValues((object) $jsonValues);
+                    $jsonValuesContainer = new class($jsonValues) {
+
+                        /**
+                         *
+                         * @var array
+                         */
+                        private $values = [];
+
+                        /**
+                         * 
+                         * @param array $values
+                         */
+                        public function __construct(array $values)
+                        {
+                            $this->values = $values;
+                        }
+
+                        /**
+                         * 
+                         * @param string $name
+                         * @return type
+                         */
+                        public function &__get(string $name)
+                        {
+                            if (isset($this->values[$name])) {
+                                return $this->values[$name];
+                            }
+                            
+                            return null;
+                        }
+
+                    };
+
+                    $result->setJsonValues($jsonValuesContainer);
                     return $result;
                 }
 
@@ -146,7 +179,7 @@ final class Json
             $result = [];
 
             foreach ($source as $key => $value) {
-                $result[$key] = $this->setJsonValues($value);
+                $result[$key] = $this->processSetJsonValues($value);
             }
 
             return $result;
