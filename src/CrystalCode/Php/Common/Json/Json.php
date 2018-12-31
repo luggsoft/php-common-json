@@ -127,7 +127,7 @@ final class Json
                 }
 
                 if ($result instanceof JsonValuesSetterInterface) {
-                    $jsonValuesObject = new ValuesObject($jsonValues);
+                    $jsonValuesObject = ValuesObject::create($jsonValues);
                     $result->setJsonValues($jsonValuesObject);
                     return $result;
                 }
