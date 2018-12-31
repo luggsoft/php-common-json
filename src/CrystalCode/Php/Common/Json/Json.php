@@ -75,9 +75,7 @@ final class Json
                     $result[$key] = $this->processGetJsonValues($value);
                 }
 
-                return (object) ($result + [
-                    '$id' => $this->nameMapper->getExternalName($internalName),
-                ]);
+                return (object) (['$id' => $this->nameMapper->getExternalName($internalName)] + $result);
             }
 
             $result = [];
@@ -90,9 +88,7 @@ final class Json
                 $result[$key] = $this->processGetJsonValues($value);
             }
 
-            return (object) ($result + [
-                '$id' => $this->nameMapper->getExternalName($internalName),
-            ]);
+            return (object) (['$id' => $this->nameMapper->getExternalName($internalName)] + $result);
         }
 
         if (is_array($source)) {
