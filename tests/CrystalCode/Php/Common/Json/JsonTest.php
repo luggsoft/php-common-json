@@ -47,7 +47,7 @@ class JsonTest extends TestCase
 
         $json = new Json($nameMapper, 0);
         $encoded = $json->encode(new Bar());
-        $this->assertEquals('{"qux":{"a":42,"b":"Hello world!","$id":"qux"},"$id":"bar"}', $encoded);
+        $this->assertEquals('{"$id":"bar","qux":{"$id":"qux","a":42,"b":"Hello world!"}}', $encoded);
     }
 
     /**
@@ -85,7 +85,7 @@ class JsonTest extends TestCase
 
         $json = new Json($nameMapper, 0);
         $encoded = $json->encode(new Qux());
-        $this->assertEquals('{"a":42,"b":"Hello world!","$id":"qux"}', $encoded);
+        $this->assertEquals('{"$id":"qux","a":42,"b":"Hello world!"}', $encoded);
     }
 
     /**
@@ -122,7 +122,7 @@ class JsonTest extends TestCase
           });
 
         $json = new Json($nameMapper, 0);
-        $decoded = $json->decode('{"a":42,"b":"Hello world!","$id":"qux"}');
+        $decoded = $json->decode('{"$id":"qux","a":42,"b":"Hello world!"}');
         $this->assertEquals(new Qux(), $decoded);
     }
 
