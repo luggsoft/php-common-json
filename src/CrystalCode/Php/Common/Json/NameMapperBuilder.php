@@ -67,28 +67,22 @@ final class NameMapperBuilder
 
             /**
              * 
-             * @param string $externalName
              * @param string $internalName
-             * @return self
+             * @return string
              */
-            public function withInternalName(string $externalName, string $internalName): self
+            protected function getDefaultExternalName(string $internalName): string
             {
-                $clone = clone $this;
-                $clone->setInternalName($externalName, $internalName);
-                return $clone;
+                return $internalName;
             }
 
             /**
              * 
              * @param string $externalName
-             * @param string $internalName
-             * @return self
+             * @return string
              */
-            public function withExternalName(string $internalName, string $externalName): self
+            protected function getDefaultInternalName(string $externalName): string
             {
-                $clone = clone $this;
-                $clone->setExternalName($internalName, $externalName);
-                return $clone;
+                return $externalName;
             }
 
         };

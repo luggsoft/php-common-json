@@ -2,8 +2,6 @@
 
 namespace CrystalCode\Php\Common\Json;
 
-use Exception;
-
 abstract class NameMapperBase implements NameMapperInterface
 {
 
@@ -47,7 +45,7 @@ abstract class NameMapperBase implements NameMapperInterface
             return $this->externalNames[$internalName];
         }
 
-        throw new Exception();
+        return $this->getDefaultExternalName($internalName);
     }
 
     /**
@@ -60,7 +58,29 @@ abstract class NameMapperBase implements NameMapperInterface
             return $this->internalNames[$externalName];
         }
 
-        throw new Exception();
+        return $this->getDefaultInternalName($externalName);
+    }
+
+    /**
+     * 
+     * {@inheritdoc}
+     */
+    final public function withInternalName(string $externalName, string $internalName): NameMapperInterface
+    {
+        $clone = clone $this;
+        $clone->setInternalName($externalName, $internalName);
+        return $clone;
+    }
+
+    /**
+     * 
+     * {@inheritdoc}
+     */
+    final public function withExternalName(string $internalName, string $externalName): NameMapperInterface
+    {
+        $clone = clone $this;
+        $clone->setExternalName($internalName, $externalName);
+        return $clone;
     }
 
     /**
@@ -86,5 +106,19 @@ abstract class NameMapperBase implements NameMapperInterface
         $this->externalNames[$internalName] = $externalName;
         $this->internalNames[$externalName] = $internalName;
     }
+
+    /**
+     * 
+     * @param string $internalName
+     * @return string
+     */
+    abstract protected function getDefaultExternalName(string $internalName): string;
+
+    /**
+     * 
+     * @param string $externalName
+     * @return string
+     */
+    abstract protected function getDefaultInternalName(string $externalName): string;
 
 }

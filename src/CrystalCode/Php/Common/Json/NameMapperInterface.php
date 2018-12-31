@@ -33,4 +33,20 @@ interface NameMapperInterface
      */
     function getInternalName(string $externalName): string;
 
+    /**
+     * 
+     * @param string $externalName
+     * @param string $internalName
+     * @return NameMapperInterface
+     */
+    function withInternalName(string $externalName, string $internalName): NameMapperInterface;
+
+    /**
+     * 
+     * @param string $internalName
+     * @param string $externalName
+     * @return NameMapperInterface
+     */
+    function withExternalName(string $internalName, string $externalName): NameMapperInterface;
+
 }

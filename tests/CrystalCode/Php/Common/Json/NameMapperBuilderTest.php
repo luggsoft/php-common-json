@@ -3,7 +3,6 @@
 namespace CrystalCode\Php\Common\Json;
 
 use PHPUnit\Framework\TestCase;
-use Exception;
 
 class NameMapperBuilderTest extends TestCase
 {
@@ -26,8 +25,7 @@ class NameMapperBuilderTest extends TestCase
         $this->assertEquals('external1', $nameMapper->getExternalName('internal1'));
 
         $this->assertFalse($nameMapper->hasExternalName('nope'));
-        $this->expectException(Exception::class);
-        $nameMapper->getExternalName('nope');
+        $this->assertEquals('nope', $nameMapper->getExternalName('nope'));
     }
 
     /**
@@ -48,8 +46,7 @@ class NameMapperBuilderTest extends TestCase
         $this->assertEquals('internal1', $nameMapper->getInternalName('external1'));
 
         $this->assertFalse($nameMapper->hasInternalName('nope'));
-        $this->expectException(Exception::class);
-        $nameMapper->getInternalName('nope');
+        $this->assertEquals('nope', $nameMapper->getInternalName('nope'));
     }
 
 }
