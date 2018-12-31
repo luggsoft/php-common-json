@@ -2,6 +2,7 @@
 
 namespace CrystalCode\Php\Common\Json;
 
+use CrystalCode\Php\Common\ValuesObject;
 use ReflectionClass as ClassReflection;
 use stdClass;
 
@@ -126,40 +127,8 @@ final class Json
                 }
 
                 if ($result instanceof JsonValuesSetterInterface) {
-                    $jsonValuesContainer = new class($jsonValues) {
-
-                        /**
-                         *
-                         * @var array
-                         */
-                        private $values = [];
-
-                        /**
-                         * 
-                         * @param array $values
-                         */
-                        public function __construct(array $values)
-                        {
-                            $this->values = $values;
-                        }
-
-                        /**
-                         * 
-                         * @param string $name
-                         * @return type
-                         */
-                        public function &__get(string $name)
-                        {
-                            if (isset($this->values[$name])) {
-                                return $this->values[$name];
-                            }
-                            
-                            return null;
-                        }
-
-                    };
-
-                    $result->setJsonValues($jsonValuesContainer);
+                    $jsonValuesObject = new ValuesObject($jsonValues);
+                    $result->setJsonValues($jsonValuesObject);
                     return $result;
                 }
 

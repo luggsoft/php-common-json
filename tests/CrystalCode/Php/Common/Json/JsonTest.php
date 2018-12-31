@@ -50,6 +50,10 @@ class JsonTest extends TestCase
         $this->assertEquals('{"qux":{"a":42,"b":"Hello world!","$id":"qux"},"$id":"bar"}', $encoded);
     }
 
+    /**
+     * 
+     * @return void
+     */
     public function test3(): void
     {
         $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
@@ -65,6 +69,10 @@ class JsonTest extends TestCase
         $this->assertEquals('{"a":42}', $encoded);
     }
 
+    /**
+     * 
+     * @return void
+     */
     public function test4(): void
     {
         $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
@@ -80,6 +88,10 @@ class JsonTest extends TestCase
         $this->assertEquals('{"a":42,"b":"Hello world!","$id":"qux"}', $encoded);
     }
 
+    /**
+     * 
+     * @return void
+     */
     public function test5(): void
     {
         $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
@@ -95,6 +107,10 @@ class JsonTest extends TestCase
         $this->assertEquals('["a","b","c"]', $encoded);
     }
 
+    /**
+     * 
+     * @return void
+     */
     public function test6(): void
     {
         $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
