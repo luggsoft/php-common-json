@@ -25,7 +25,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $encoded = $json->encode(new Foo());
         $this->assertEquals('{"$id":"foo"}', $encoded);
     }
@@ -45,7 +45,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $encoded = $json->encode(new Bar());
         $this->assertEquals('{"$id":"bar","qux":{"$id":"qux","a":42,"b":"Hello world!"}}', $encoded);
     }
@@ -64,7 +64,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $encoded = $json->encode((object) ['a' => 42]);
         $this->assertEquals('{"a":42}', $encoded);
     }
@@ -83,7 +83,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $encoded = $json->encode(new Qux());
         $this->assertEquals('{"$id":"qux","a":42,"b":"Hello world!"}', $encoded);
     }
@@ -102,7 +102,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $encoded = $json->encode(['a', 'b', 'c']);
         $this->assertEquals('["a","b","c"]', $encoded);
     }
@@ -121,7 +121,7 @@ class JsonTest extends TestCase
             ]);
         });
         
-        $json = new DefaultJsonService($nameMapper, 0);
+        $json = new Json($nameMapper, '$id', 0);
         $decoded = $json->decode('{"$id":"qux","a":42,"b":"Hello world!"}');
         $this->assertEquals(new Qux(), $decoded);
     }

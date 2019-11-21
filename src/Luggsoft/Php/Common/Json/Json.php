@@ -2,30 +2,13 @@
 
 namespace Luggsoft\Php\Common\Json;
 
+use Luggsoft\Php\Common\ArgumentException;
 use Luggsoft\Php\Common\ValuesObject;
 use ReflectionClass as ClassReflection;
+use ReflectionException;
 use stdClass;
 
-interface JsonService
-{
-    
-    /**
-     *
-     * @param string $input
-     * @return mixed
-     */
-    public function decode(string $input);
-    
-    /**
-     *
-     * @param mixed $value
-     * @return string
-     */
-    public function encode($value): string;
-    
-}
-
-final class DefaultJsonService implements JsonService
+final class Json implements JsonInterface
 {
     
     /**
@@ -62,6 +45,7 @@ final class DefaultJsonService implements JsonService
     /**
      *
      * {@inheritDoc}
+     * @throws ReflectionException
      */
     public function encode($value): string
     {
@@ -73,6 +57,7 @@ final class DefaultJsonService implements JsonService
      *
      * @param mixed $source
      * @return mixed
+     * @throws ReflectionException
      */
     private function processGetJsonValues($source)
     {
@@ -134,6 +119,8 @@ final class DefaultJsonService implements JsonService
      *
      * @param mixed $source
      * @return mixed
+     * @throws ArgumentException
+     * @throws ReflectionException
      */
     private function processSetJsonValues($source)
     {
@@ -186,7 +173,6 @@ final class DefaultJsonService implements JsonService
     public function getPropertyName(): string
     {
         return $this->propertyName;
-        return $this;
     }
     
     /**
