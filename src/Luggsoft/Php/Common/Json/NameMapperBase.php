@@ -1,42 +1,42 @@
 <?php
 
-namespace CrystalCode\Php\Common\Json;
+namespace Luggsoft\Php\Common\Json;
 
 abstract class NameMapperBase implements NameMapperInterface
 {
-
+    
     /**
      *
      * @var array|string[]
      */
     private $internalNames = [];
-
+    
     /**
      *
      * @var array|string[]
      */
     private $externalNames = [];
-
+    
     /**
-     * 
+     *
      * {@inheritdoc}
      */
     final public function hasExternalName(string $internalName): bool
     {
         return isset($this->externalNames[$internalName]);
     }
-
+    
     /**
-     * 
+     *
      * {@inheritdoc}
      */
     final public function hasInternalName(string $externalName): bool
     {
         return isset($this->internalNames[$externalName]);
     }
-
+    
     /**
-     * 
+     *
      * {@inheritdoc}
      */
     final public function getExternalName(string $internalName): string
@@ -44,12 +44,19 @@ abstract class NameMapperBase implements NameMapperInterface
         if (isset($this->externalNames[$internalName])) {
             return $this->externalNames[$internalName];
         }
-
+        
         return $this->getDefaultExternalName($internalName);
     }
-
+    
     /**
-     * 
+     *
+     * @param string $internalName
+     * @return string
+     */
+    abstract protected function getDefaultExternalName(string $internalName): string;
+    
+    /**
+     *
      * {@inheritdoc}
      */
     final public function getInternalName(string $externalName): string
@@ -57,12 +64,19 @@ abstract class NameMapperBase implements NameMapperInterface
         if (isset($this->internalNames[$externalName])) {
             return $this->internalNames[$externalName];
         }
-
+        
         return $this->getDefaultInternalName($externalName);
     }
-
+    
     /**
-     * 
+     *
+     * @param string $externalName
+     * @return string
+     */
+    abstract protected function getDefaultInternalName(string $externalName): string;
+    
+    /**
+     *
      * {@inheritdoc}
      */
     final public function withInternalName(string $externalName, string $internalName): NameMapperInterface
@@ -71,20 +85,9 @@ abstract class NameMapperBase implements NameMapperInterface
         $clone->setInternalName($externalName, $internalName);
         return $clone;
     }
-
+    
     /**
-     * 
-     * {@inheritdoc}
-     */
-    final public function withExternalName(string $internalName, string $externalName): NameMapperInterface
-    {
-        $clone = clone $this;
-        $clone->setExternalName($internalName, $externalName);
-        return $clone;
-    }
-
-    /**
-     * 
+     *
      * @param string $externalName
      * @param string $internalName
      * @return void
@@ -94,9 +97,20 @@ abstract class NameMapperBase implements NameMapperInterface
         $this->internalNames[$externalName] = $internalName;
         $this->externalNames[$internalName] = $externalName;
     }
-
+    
     /**
-     * 
+     *
+     * {@inheritdoc}
+     */
+    final public function withExternalName(string $internalName, string $externalName): NameMapperInterface
+    {
+        $clone = clone $this;
+        $clone->setExternalName($internalName, $externalName);
+        return $clone;
+    }
+    
+    /**
+     *
      * @param string $internalName
      * @param string $externalName
      * @return void
@@ -106,19 +120,5 @@ abstract class NameMapperBase implements NameMapperInterface
         $this->externalNames[$internalName] = $externalName;
         $this->internalNames[$externalName] = $internalName;
     }
-
-    /**
-     * 
-     * @param string $internalName
-     * @return string
-     */
-    abstract protected function getDefaultExternalName(string $internalName): string;
-
-    /**
-     * 
-     * @param string $externalName
-     * @return string
-     */
-    abstract protected function getDefaultInternalName(string $externalName): string;
-
+    
 }

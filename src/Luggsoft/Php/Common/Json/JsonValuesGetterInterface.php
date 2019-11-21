@@ -1,14 +1,14 @@
 <?php
 
-namespace CrystalCode\Php\Common\Json;
+namespace Luggsoft\Php\Common\Json;
 
 interface JsonValuesGetterInterface
 {
-
+    
     /**
-     * 
+     *
      * @return object
      */
     function getJsonValues(): object;
-
+    
 }
