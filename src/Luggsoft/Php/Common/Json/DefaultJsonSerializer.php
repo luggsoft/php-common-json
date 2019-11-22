@@ -4,53 +4,22 @@ namespace Luggsoft\Php\Common\Json;
 
 use Luggsoft\Php\Common\ArgumentException;
 use Luggsoft\Php\Common\ValuesObject;
+use Psr\Log\LoggerInterface;
 use ReflectionClass as ClassReflection;
 use ReflectionException;
 use stdClass;
 
-final class Json implements JsonInterface
+final class DefaultJsonSerializer extends JsonSerializerBase
 {
     
     /**
      *
-     * @var NameMapperInterface
+     * @param LoggerInterface $logger
+     * @param JsonSerializerSettings $jsonSerializerSettings
      */
-    private $nameMapper;
-    
-    /**
-     *
-     * @var int
-     */
-    private $options;
-    
-    /**
-     *
-     * @var string
-     */
-    private $propertyName;
-    
-    /**
-     *
-     * @param NameMapperInterface $nameMapper
-     * @param string $propertyName
-     * @param int $options
-     */
-    public function __construct(NameMapperInterface $nameMapper, string $propertyName = '$class', int $options = JSON_PRETTY_PRINT)
+    public function __construct(LoggerInterface $logger, JsonSerializerSettings $jsonSerializerSettings)
     {
-        $this->nameMapper = $nameMapper;
-        $this->options = $options;
-        $this->propertyName = $propertyName;
-    }
-    
-    /**
-     *
-     * {@inheritDoc}
-     * @throws ReflectionException
-     */
-    public function encode($value): string
-    {
-        $jsonValues = $this->processGetJsonValues($value);
-        return json_encode($jsonValues, $this->options);
+        parent::__construct($logger, $jsonSerializerSettings);
     }
     
     /**
@@ -59,14 +28,18 @@ final class Json implements JsonInterface
      * @return mixed
      * @throws ReflectionException
      */
-    private function processGetJsonValues($source)
+    protected function processGetJsonValues($source)
     {
+        $nameMapper = $this->getJsonSerializerSettings()->getNameMapper();
+        $propertyName = $this->getJsonSerializerSettings()->getPropertyName();
+        
         if (is_object($source)) {
             if ($source instanceof stdClass) {
                 return $source;
             }
             
             $internalName = get_class($source);
+            $this->getLogger()->debug("Getting JSON values for ${internalName}");
             
             if ($source instanceof JsonValuesGetterInterface) {
                 $result = [];
@@ -76,7 +49,7 @@ final class Json implements JsonInterface
                     $result[$key] = $this->processGetJsonValues($value);
                 }
                 
-                return (object) (['$id' => $this->nameMapper->getExternalName($internalName)] + $result);
+                return (object) (['$id' => $nameMapper->getExternalName($internalName)] + $result);
             }
             
             $result = [];
@@ -89,10 +62,11 @@ final class Json implements JsonInterface
                 $result[$key] = $this->processGetJsonValues($value);
             }
             
-            return (object) (['$id' => $this->nameMapper->getExternalName($internalName)] + $result);
+            return (object) ([$propertyName => $nameMapper->getExternalName($internalName)] + $result);
         }
         
         if (is_array($source)) {
+            $this->getLogger()->debug("Getting JSON values for array");
             $result = [];
             
             foreach ($source as $key => $value) {
@@ -107,26 +81,19 @@ final class Json implements JsonInterface
     
     /**
      *
-     * {@inheritDoc}
-     */
-    public function decode(string $input)
-    {
-        $jsonValues = json_decode($input);
-        return $this->processSetJsonValues($jsonValues);
-    }
-    
-    /**
-     *
      * @param mixed $source
      * @return mixed
      * @throws ArgumentException
      * @throws ReflectionException
      */
-    private function processSetJsonValues($source)
+    protected function processSetJsonValues($source)
     {
+        $nameMapper = $this->getJsonSerializerSettings()->getNameMapper();
+        $propertyName = $this->getJsonSerializerSettings()->getPropertyName();
+        
         if (is_object($source)) {
-            if (isset($source->{'$id'})) {
-                $internalName = $this->nameMapper->getInternalName($source->{'$id'});
+            if (isset($source->{"$propertyName"})) {
+                $internalName = $nameMapper->getInternalName($source->{"$propertyName"});
                 $classReflection = new ClassReflection($internalName);
                 $result = $classReflection->newInstanceWithoutConstructor();
                 $jsonValues = [];
@@ -164,25 +131,6 @@ final class Json implements JsonInterface
         }
         
         return $source;
-    }
-    
-    /**
-     *
-     * @return string
-     */
-    public function getPropertyName(): string
-    {
-        return $this->propertyName;
-    }
-    
-    /**
-     *
-     * @param string $propertyName
-     * @return self
-     */
-    public function setPropertyName(string $propertyName): void
-    {
-        $this->propertyName = $propertyName;
     }
     
 }

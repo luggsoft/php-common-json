@@ -9,23 +9,36 @@ class NameMapperBuilderTest extends TestCase
     
     /**
      *
+     * @var NameMapperInterface
+     */
+    private $nameMapper;
+    
+    /**
+     *
      * @return void
      */
-    public function test1(): void
+    protected function setUp()
     {
-        $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
+        $this->nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
             $nameMapperBuilder->withExternalNames([
                 'internal1' => 'external1',
                 'internal2' => 'external2',
                 'internal3' => 'external3',
             ]);
         });
+    }
+    
+    /**
+     *
+     * @return void
+     */
+    public function test1(): void
+    {
+        $this->assertTrue($this->nameMapper->hasExternalName('internal1'));
+        $this->assertEquals('external1', $this->nameMapper->getExternalName('internal1'));
         
-        $this->assertTrue($nameMapper->hasExternalName('internal1'));
-        $this->assertEquals('external1', $nameMapper->getExternalName('internal1'));
-        
-        $this->assertFalse($nameMapper->hasExternalName('nope'));
-        $this->assertEquals('nope', $nameMapper->getExternalName('nope'));
+        $this->assertFalse($this->nameMapper->hasExternalName('nope'));
+        $this->assertEquals('nope', $this->nameMapper->getExternalName('nope'));
     }
     
     /**
@@ -34,19 +47,11 @@ class NameMapperBuilderTest extends TestCase
      */
     public function test2(): void
     {
-        $nameMapper = NameMapperBuilder::buildFromCallable(function (NameMapperBuilder $nameMapperBuilder) {
-            $nameMapperBuilder->withInternalNames([
-                'external1' => 'internal1',
-                'external2' => 'internal2',
-                'external3' => 'internal3',
-            ]);
-        });
+        $this->assertTrue($this->nameMapper->hasInternalName('external1'));
+        $this->assertEquals('internal1', $this->nameMapper->getInternalName('external1'));
         
-        $this->assertTrue($nameMapper->hasInternalName('external1'));
-        $this->assertEquals('internal1', $nameMapper->getInternalName('external1'));
-        
-        $this->assertFalse($nameMapper->hasInternalName('nope'));
-        $this->assertEquals('nope', $nameMapper->getInternalName('nope'));
+        $this->assertFalse($this->nameMapper->hasInternalName('nope'));
+        $this->assertEquals('nope', $this->nameMapper->getInternalName('nope'));
     }
     
 }

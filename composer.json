@@ -12,9 +12,13 @@
     ],
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "luggsoft/php-common": "dev-master",
         "luggsoft/php-common-collections": "dev-master",
-        "ext-json": "*"
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/log": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",

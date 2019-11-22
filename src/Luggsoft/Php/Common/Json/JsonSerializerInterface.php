@@ -2,7 +2,7 @@
 
 namespace Luggsoft\Php\Common\Json;
 
-interface JsonInterface
+interface JsonSerializerInterface
 {
     
     /**
