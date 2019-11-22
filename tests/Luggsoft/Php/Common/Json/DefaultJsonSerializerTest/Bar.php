@@ -1,6 +1,6 @@
 <?php
 
-namespace Luggsoft\Php\Common\Json\JsonTest;
+namespace Luggsoft\Php\Common\Json\DefaultJsonSerializerTest;
 
 class Bar
 {

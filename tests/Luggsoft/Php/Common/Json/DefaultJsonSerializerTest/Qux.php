@@ -1,6 +1,6 @@
 <?php
 
-namespace Luggsoft\Php\Common\Json\JsonTest;
+namespace Luggsoft\Php\Common\Json\DefaultJsonSerializerTest;
 
 use Luggsoft\Php\Common\Json\JsonValuesGetterInterface;
 use Luggsoft\Php\Common\Json\JsonValuesSetterInterface;
